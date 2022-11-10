@@ -1,1 +1,1 @@
-# mysql_replication
+RUN command 'sudo sh build.sh'
