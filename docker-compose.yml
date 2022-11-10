@@ -12,8 +12,8 @@ services:
     volumes:
       - ./master/conf.d:/etc/mysql/mysql.conf.d/
       - ./master/data:/var/lib/mysql
-    networks:
-      - overlay
+    # networks:
+    #   - overlay
 
   mysql-slave:
     image: mysql:8.0
@@ -28,8 +28,8 @@ services:
     volumes:
       - ./slave/conf.d:/etc/mysql/mysql.conf.d/
       - ./slave/data:/var/lib/mysql
-    networks:
-      - overlay
+    # networks:
+    #   - overlay
 
-networks:
-  overlay:
+# networks:
+#   overlay:
