@@ -1,20 +1,26 @@
 #!bin/bash
 
 # Cleanup
-docker stop master slave
-docker rm master slave
+# docker stop master slave
+# docker rm master slave
+# rm -rf master/data/*
+# rm -rf slave/data/*
+# docker network rm replicanet
+
+docker-compose down -v 
 rm -rf master/data/*
 rm -rf slave/data/*
-docker network rm replicanet
+docker-compose build
+docker-compose up -d
 
 # Build
-docker network create replicanet
+# docker network create replicanet
 
-docker run -d --name=master --net=replicanet --hostname=master -p 3307:3306 -v $PWD/master/data:/var/lib/mysql \
--v $PWD/master/conf.d:/etc/mysql/conf.d/mysql.conf.cnf -e MYSQL_ROOT_PASSWORD=123456 mysql/mysql-server:8.0 --server-id=1 --log-bin='mysql-bin-1.log'
+# docker run -d --name=master --net=replicanet --hostname=master -p 3307:3306 -v $PWD/master/data:/var/lib/mysql \
+# -v $PWD/master/conf/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf -e MYSQL_ROOT_PASSWORD=123456 mysql/mysql-server:8.0 --server-id=1 --log-bin='mysql-bin-1.log' --binlog_format=ROW
 
-docker run -d --name=slave --net=replicanet --hostname=slave -p 3308:3306 -v $PWD/slave/data:/var/lib/mysql \
--v $PWD/slave/conf.d:/etc/mysql/conf.d/mysql.conf.cnf -e MYSQL_ROOT_PASSWORD=123456 mysql/mysql-server:8.0 --server-id=2
+# docker run -d --name=slave --net=replicanet --hostname=slave -p 3308:3306 -v $PWD/slave/data:/var/lib/mysql \
+# -v $PWD/slave/conf/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf -e MYSQL_ROOT_PASSWORD=123456 mysql/mysql-server:8.0 --server-id=2
 
 until docker exec -it master mysql -uroot -p123456 \
   -e "CREATE USER 'slave'@'%' IDENTIFIED BY '123456';" \

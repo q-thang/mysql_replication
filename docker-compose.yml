@@ -1,35 +1,28 @@
 version: '3'
 
 services:
-  mysql-master:
-    image: mysql:8.0
+  master:
+    image: mysql/mysql-server:8.0
     environment:
-      - MYSQL_ROOT_PASSWORD=It235711
-    container_name: 'mysql_master'
-    restart: "no"
+      - MYSQL_ROOT_PASSWORD=123456
+    container_name: 'master'
+    restart: unless-stopped
     ports:
-      - "3307:3306"
+      - "3309:3306"
     volumes:
-      - ./master/conf.d:/etc/mysql/mysql.conf.d/
+      - ./master/conf/mysql.conf.cnf:/etc/my.cnf
       - ./master/data:/var/lib/mysql
-    # networks:
-    #   - overlay
 
-  mysql-slave:
-    image: mysql:8.0
+  slave:
+    image: mysql/mysql-server:8.0
     environment:
-      - MYSQL_ROOT_PASSWORD=It235711
-    container_name: 'mysql_slave'
+      - MYSQL_ROOT_PASSWORD=123456
+    container_name: 'slave'
     ports:
-      - "3308:3306"
+      - "3310:3306"
     depends_on:
-      - mysql-master
-    restart: "no"
+      - master
+    restart: unless-stopped
     volumes:
-      - ./slave/conf.d:/etc/mysql/mysql.conf.d/
+      - ./slave/conf/mysql.conf.cnf:/etc/my.cnf
       - ./slave/data:/var/lib/mysql
-    # networks:
-    #   - overlay
-
-# networks:
-#   overlay:
